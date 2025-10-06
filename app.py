@@ -3,7 +3,7 @@ from functools import wraps
 from werkzeug.security import check_password_hash
 import mysql.connector
 import os
-
+#asfasdfasf
 app = Flask(__name__)
 app.secret_key = os.getenv("SECRET_KEY", "super_secret_key")
 
