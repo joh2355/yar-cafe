@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>🍴 Manage Menu - Yar Café</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body {
+      background: linear-gradient(135deg, #fff8f0, #f5e0c3);
+      font-family: "Poppins", sans-serif;
+      color: #4b2e13;
+    }
+    h2 {
+      text-align: center;
+      color: #6f4e37;
+      font-weight: 700;
+      margin-bottom: 30px;
+    }
+    .card {
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    }
+    .table-box {
+      background: #fff;
+      border-radius: 15px;
+      padding: 25px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+    }
+    .table thead {
+      background-color: #6f4e37;
+      color: #fff;
+    }
+    .btn-success {
+      background-color: #a67b5b;
+      border: none;
+    }
+    .btn-success:hover {
+      background-color: #6f4e37;
+    }
+    .btn-primary {
+      background-color: #9b6b43;
+      border: none;
+    }
+    .btn-primary:hover {
+      background-color: #6f4e37;
+    }
+    .btn-danger {
+      background-color: #c75c5c;
+      border: none;
+    }
+    .btn-danger:hover {
+      background-color: #8b2e2e;
+    }
+    .btn-back {
+      background-color: #6f4e37;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 10px 20px;
+    }
+    .btn-back:hover {
+      background-color: #4b2e13;
+      color: white;
+    }
+  </style>
+</head>
+<body class="p-4">
+
+  <div class="container">
+    <h2>🍴 Manage Yar Café Menu</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }} shadow-sm">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add new item -->
+    <div class="card mb-4 border-0">
+      <div class="card-body">
+        <h5 class="text-coffee mb-3">➕ Add New Menu Item</h5>
+        <form method="POST" action="{{ url_for('menu_add') }}">
+          <div class="row g-2">
+            <div class="col-md-3">
+              <input type="text" name="name" class="form-control" placeholder="Item name (e.g., Latte)" required>
+            </div>
+            <div class="col-md-2">
+              <input type="text" name="emoji" class="form-control" placeholder="Emoji (☕)">
+            </div>
+            <div class="col-md-3">
+              <input type="text" name="category" class="form-control" placeholder="Category (Drink/Food)" required>
+            </div>
+            <div class="col-md-2">
+              <input type="number" step="0.01" name="price" class="form-control" placeholder="Price" required>
+            </div>
+            <div class="col-md-2">
+              <button type="submit" class="btn btn-success w-100">Add</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Menu Table -->
+    <div class="table-box">
+      <h5 class="mb-3">📋 Current Menu</h5>
+      <table class="table table-striped align-middle">
+        <thead>
+          <tr>
+            <th>Emoji</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td class="fs-4">{{ item.emoji }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category }}</td>
+            <td>{{ "%.2f"|format(item.price) }}</td>
+            <td class="text-center">
+              <a href="{{ url_for('menu_edit', item_id=item.id) }}" class="btn btn-sm btn-primary me-2">✏ Edit</a>
+              <a href="{{ url_for('menu_delete', item_id=item.id) }}" class="btn btn-sm btn-danger"
+                 onclick="return confirm('Delete {{ item.name }} from the menu?')">🗑 Delete</a>
+            </td>
+          </tr>
+          {% else %}
+          <tr>
+            <td colspan="5" class="text-center text-muted py-3">No menu items available. Add something delicious! 🍰</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="text-center mt-4">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-back">← Back to Dashboard</a>
+    </div>
+  </div>
+
+</body>
+</html>

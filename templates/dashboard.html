@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yar Café Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8ede3, #e0c3a3);
+      font-family: 'Poppins', sans-serif;
+      color: #4b3832;
+      padding-bottom: 80px; /* space for mobile nav */
+    }
+
+    h2 {
+      font-family: 'Pacifico', cursive;
+      color: #6f4e37;
+      margin-bottom: 30px;
+    }
+
+    .card-box {
+      background: #fffaf3;
+      border-radius: 18px;
+      padding: 25px;
+      box-shadow: 0px 6px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+
+    .card-box:hover {
+      transform: translateY(-5px);
+    }
+
+    .card-box h5 {
+      font-weight: 600;
+      color: #8b5e3c;
+    }
+
+    .fs-4 {
+      font-weight: 600;
+      color: #3e2723;
+    }
+
+    .btn-lg {
+      padding: 15px;
+      font-size: 1.05rem;
+      font-weight: 500;
+      border-radius: 30px;
+      border: none;
+      transition: 0.3s;
+    }
+
+    .btn-lg:hover {
+      opacity: 0.9;
+      transform: scale(1.03);
+    }
+
+    .btn-primary { background-color: #c67c4e; }
+    .btn-secondary { background-color: #a98467; color: white; }
+    .btn-dark { background-color: #4b3832; }
+    .btn-info { background-color: #c0a080; color: white; }
+    .btn-warning { background-color: #e6aa68; color: white; }
+    .btn-success { background-color: #7b9b46; border: none; }
+    .btn-outline-danger {
+      border-radius: 30px;
+      border-width: 2px;
+      color: #c94c4c;
+      font-weight: 600;
+    }
+    .btn-outline-danger:hover {
+      background-color: #c94c4c;
+      color: white;
+    }
+
+    /* 🌐 Mobile responsiveness */
+    @media (max-width: 768px) {
+      h2 {
+        font-size: 1.6rem;
+        margin-bottom: 20px;
+      }
+      .card-box {
+        padding: 18px;
+      }
+      .fs-4 {
+        font-size: 1rem;
+      }
+      .btn-lg {
+        font-size: 0.95rem;
+        padding: 12px;
+      }
+      .container {
+        padding: 10px;
+      }
+      .row.g-3 > div {
+        margin-bottom: 10px;
+      }
+    }
+
+    /* 📱 Floating bottom nav for phones */
+    .mobile-nav {
+      display: none;
+    }
+    @media (max-width: 576px) {
+      .mobile-nav {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #6f4e37;
+        color: white;
+        padding: 10px 0;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        z-index: 1000;
+      }
+      .mobile-nav a {
+        color: white;
+        text-decoration: none;
+        font-size: 0.85rem;
+        text-align: center;
+      }
+      .mobile-nav i {
+        font-size: 1.3rem;
+        display: block;
+      }
+    }
+  </style>
+</head>
+<body class="p-4">
+
+  <div class="container">
+    <h2 class="text-center">☕ Yar Café Dashboard</h2>
+
+    <!-- Top Info Row -->
+    <div class="row mb-4 g-4">
+      <div class="col-12 col-md-4">
+        <div class="card-box">
+          <h5>💰 Balance</h5>
+          <p class="fs-4">{{ balance }}</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card-box">
+          <h5>🙍 User</h5>
+          <p class="fs-4">{{ username }}</p>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card-box">
+          <h5>🎭 Role</h5>
+          <p class="fs-4 text-capitalize">{{ role }}</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="row g-3 text-center">
+      <div class="col-12 col-md-4">
+        <a href="{{ url_for('new_order') }}" class="btn btn-primary btn-lg w-100 mb-2">🧾 New Order</a>
+        <a href="{{ url_for('orders') }}" class="btn btn-secondary btn-lg w-100">📜 Order History</a>
+      </div>
+
+      {% if role == 'admin' %}
+      <div class="col-12 col-md-4">
+        <a href="{{ url_for('menu_manage') }}" class="btn btn-info btn-lg w-100 mb-2">🍴 Manage Menu</a>
+        <a href="{{ url_for('inventory') }}" class="btn btn-dark btn-lg w-100">📦 Inventory</a>
+      </div>
+      <div class="col-12 col-md-4">
+        <a href="{{ url_for('expenses') }}" class="btn btn-warning btn-lg w-100 mb-2">💸 Expenses</a>
+        <a href="{{ url_for('investments') }}" class="btn btn-success btn-lg w-100">📈 Investments</a>
+      </div>
+      <div class="col-12 mt-3">
+        <a href="{{ url_for('report') }}" class="btn btn-secondary btn-lg w-100">📊 Reports</a>
+      </div>
+      {% endif %}
+    </div>
+
+    <!-- Logout -->
+    <div class="text-center mt-5">
+      <a href="{{ url_for('logout') }}" class="btn btn-outline-danger btn-lg">🚪 Logout</a>
+    </div>
+  </div>
+
+  <!-- 📱 Mobile Bottom Nav -->
+  <div class="mobile-nav">
+    <a href="{{ url_for('dashboard') }}"><i>🏠</i>Home</a>
+    <a href="{{ url_for('new_order') }}"><i>🧾</i>Order</a>
+    <a href="{{ url_for('orders') }}"><i>📜</i>History</a>
+    {% if role == 'admin' %}
+    <a href="{{ url_for('menu_manage') }}"><i>🍴</i>Menu</a>
+    <a href="{{ url_for('report') }}"><i>📊</i>Report</a>
+    {% endif %}
+  </div>
+
+</body>
+</html>

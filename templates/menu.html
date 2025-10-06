@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Management - Café App</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <style>
+    body { background: #f8f9fa; }
+    .menu-table {
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body class="p-4">
+  <div class="container">
+    <h2 class="mb-4">📋 Menu Management</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add New Item -->
+    <div class="menu-table mb-4">
+      <h4>Add New Item</h4>
+      <form method="POST" action="{{ url_for('menu_add') }}">
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <input type="text" name="name" class="form-control" placeholder="Item Name" required>
+          </div>
+          <div class="col-md-2">
+            <input type="text" name="category" class="form-control" placeholder="Category" required>
+          </div>
+          <div class="col-md-2">
+            <input type="number" step="0.01" name="price" class="form-control" placeholder="Price" required>
+          </div>
+          <div class="col-md-2">
+            <input type="text" name="emoji" class="form-control" placeholder="Emoji (🍔)">
+          </div>
+          <div class="col-md-3">
+            <button type="submit" class="btn btn-success w-100">➕ Add Item</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+    <!-- Menu Items List -->
+    <div class="menu-table">
+      <h4>Existing Menu</h4>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>Emoji</th>
+            <th>Name</th>
+            <th>Category</th>
+            <th>Price</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for item in items %}
+          <tr>
+            <td>{{ item.emoji }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.category }}</td>
+            <td>${{ "%.2f"|format(item.price) }}</td>
+            <td>
+              <a href="{{ url_for('menu_delete', item_id=item.id) }}" class="btn btn-sm btn-danger">🗑️ Delete</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</body>
+</html>

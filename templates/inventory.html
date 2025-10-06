@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📦 Inventory - Yar Café</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      background: linear-gradient(135deg, #f8ede3, #e0c3a3);
+      font-family: 'Poppins', sans-serif;
+      color: #4b3832;
+    }
+
+    h2 {
+      font-family: 'Pacifico', cursive;
+      color: #6f4e37;
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .card {
+      background: #fffaf3;
+      border-radius: 18px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      padding: 25px;
+    }
+
+    table {
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    thead {
+      background-color: #6f4e37;
+      color: white;
+    }
+
+    tbody tr:hover {
+      background-color: #f6ebe2;
+      transition: 0.2s ease-in-out;
+    }
+
+    .btn {
+      border-radius: 25px;
+      transition: all 0.2s ease;
+      font-weight: 500;
+    }
+
+    .btn-success {
+      background-color: #8b5e3c;
+      border: none;
+    }
+
+    .btn-success:hover {
+      background-color: #704830;
+    }
+
+    .btn-edit {
+      background-color: #c67c4e;
+      color: white;
+      border: none;
+    }
+
+    .btn-edit:hover {
+      background-color: #a65b2d;
+    }
+
+    .btn-delete {
+      background-color: #d9534f;
+      color: white;
+      border: none;
+    }
+
+    .btn-delete:hover {
+      background-color: #c9302c;
+    }
+
+    .btn-secondary {
+      background-color: #a98467;
+      border: none;
+    }
+
+    .btn-secondary:hover {
+      background-color: #8d7156;
+    }
+
+    .form-control {
+      border-radius: 10px;
+      border: 1px solid #d6bfa8;
+    }
+
+    .alert {
+      border-radius: 10px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .card {
+        padding: 20px 15px;
+      }
+      table {
+        font-size: 13px;
+      }
+      .btn-sm {
+        font-size: 12px;
+        padding: 3px 8px;
+      }
+      .col-md-4, .col-md-3, .col-md-2, .col-md-1 {
+        flex: 100%;
+        max-width: 100%;
+      }
+      form.row.g-3 {
+        row-gap: 10px;
+      }
+      h4 {
+        text-align: center;
+      }
+      .btn-lg {
+        width: 100%;
+      }
+    }
+
+    @media (max-width: 576px) {
+      table thead {
+        display: none;
+      }
+      table tbody tr {
+        display: block;
+        margin-bottom: 10px;
+        background: #fff;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+      }
+      table tbody td {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px;
+        border: none;
+        font-size: 14px;
+      }
+      table tbody td::before {
+        content: attr(data-label);
+        font-weight: 600;
+        color: #6f4e37;
+      }
+    }
+  </style>
+</head>
+<body class="p-3">
+
+  <div class="container">
+    <h2>📦 Yar Café Inventory Management</h2>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for cat, msg in messages %}
+          <div class="alert alert-{{ cat }}">{{ msg }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <!-- Add Item Form -->
+    <div class="card mb-4">
+      <h4>➕ Add New Inventory Item</h4>
+      <form method="POST" action="{{ url_for('inventory_add') }}" class="row g-3 mt-2">
+        <div class="col-md-4">
+          <input type="text" name="name" class="form-control" placeholder="Item Name" required>
+        </div>
+        <div class="col-md-2">
+          <input type="number" step="0.01" name="price" class="form-control" placeholder="Price" required>
+        </div>
+        <div class="col-md-2">
+          <input type="number" name="stock" class="form-control" placeholder="Stock Qty" required>
+        </div>
+        <div class="col-md-3">
+          <input type="text" name="category" class="form-control" placeholder="Category">
+        </div>
+        <div class="col-md-1 d-grid">
+          <button type="submit" class="btn btn-success">Add</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="card">
+      <h4>📋 Current Inventory</h4>
+      <div class="table-responsive mt-3">
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Item Name</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Stock</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in items %}
+            <tr>
+              <td data-label="ID">{{ item.id }}</td>
+              <td data-label="Item Name">{{ item.name }}</td>
+              <td data-label="Category">{{ item.category }}</td>
+              <td data-label="Price">{{ "%.2f"|format(item.price) }}</td>
+              <td data-label="Stock">{{ item.stock }}</td>
+              <td data-label="Actions">
+                <a href="{{ url_for('inventory_edit', item_id=item.id) }}" class="btn btn-sm btn-edit mb-1">✏️ Edit</a>
+                <form action="{{ url_for('inventory_delete', item_id=item.id) }}" method="POST" style="display:inline;">
+                  <button type="submit" class="btn btn-sm btn-delete" onclick="return confirm('Delete {{ item.name }}?')">🗑️ Delete</button>
+                </form>
+              </td>
+            </tr>
+            {% else %}
+            <tr>
+              <td colspan="6" class="text-center text-muted">No inventory items found.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Back to Dashboard -->
+    <div class="text-center mt-4">
+      <a href="{{ url_for('dashboard') }}" class="btn btn-secondary btn-lg">← Back to Dashboard</a>
+    </div>
+  </div>
+
+</body>
+</html>
